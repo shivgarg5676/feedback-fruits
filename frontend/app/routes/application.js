@@ -4,6 +4,15 @@ import constants from "frontend/utils/constants";
 export default Ember.Route.extend(getLoggedInUser,{
   beforeModel:function(){
     this.getLoggedInUser();
+  },
+  actions:{
+    signOut(){
+      debugger;
+    },
+    playMultiplayer(){
+      this.transitionTo('multiplayer')
+    }
+
   }
 
 });

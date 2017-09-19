@@ -1,0 +1,30 @@
+{{#paper-sidenav-container class="inner-sidenav"}}
+
+  {{#paper-sidenav
+    class="md-whiteframe-z2"
+    name="left2"
+    open=leftSideBarOpen2
+    lockedOpen=leftSideBarLockedOpen
+    onToggle=(action (mut leftSideBarOpen2))}}
+    {{#paper-toolbar as |toolbar|}}
+      {{#paper-toolbar-tools}}tic tac toe{{/paper-toolbar-tools}}
+    {{/paper-toolbar}}
+    {{#paper-content padding=true}}
+      <div {{action 'signOut'}}>
+        sign-out
+      </div>
+    {{/paper-content}}
+  {{/paper-sidenav}}
+
+  {{#paper-card-content class="flex"}}
+    <div class="layout-fill layout-align-start-center layout-column" style="height: 500px">
+      {{#paper-button raised=true onClick=(action "toggle" "leftSideBarOpen2")}}
+        {{if leftSideBarLockedOpen "Unlock" "Lock"}} left sidenav
+      {{/paper-button}}
+      {{#paper-button raised=true onClick=(action 'playMultiplayer')}}
+        Play Multiplayer
+      {{/paper-button}}
+    </div>
+  {{/paper-card-content}}
+
+{{/paper-sidenav-container}}
