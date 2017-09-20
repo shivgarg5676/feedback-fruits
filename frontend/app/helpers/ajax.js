@@ -10,7 +10,7 @@ let helper = function(url, type, hash, context){
   hash.dataType = 'json';
   hash.contentType = 'application/json; charset=utf-8';
   hash.context = context || this;
-  $.ajax(hash)
+  return $.ajax(hash)
 }
 
 

@@ -22,8 +22,8 @@ let controller = Ember.Controller.extend(getLoggedInUser,{
             });
           }
           else{
-            self.set('inputPassword',"")
-            this.set('errorMessage', data.message)
+            self.set('password',"")
+            self.set('errorMessage', data.message)
           }
         }
       }

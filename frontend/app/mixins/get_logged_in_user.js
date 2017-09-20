@@ -28,7 +28,7 @@ let mixin = Ember.Mixin.create({
 
       }
     }
-    ajax(constants.LOGGED_IN_USER_URL ,'GET', hash, this)
+    return ajax(constants.LOGGED_IN_USER_URL ,'GET', hash, this)
   }
 })
 

@@ -1,12 +1,15 @@
 {{outlet}}
-{{#paper-form onSubmit=(action "login") as |form|}}
-  <div class="layout-row">
-    <div class="layout-column flex-50">
+{{#paper-form  class="layout-row flex-100 layout-align-center-center login-form" onSubmit=(action "login") as |form|}}
+
+  <div class="layout-column flex-50">
+      <div class="headline flex-50  layout-align-center-center layout-row flex-100">
+        tic tac toe
+      </div>
       {{form.input label="email" value=email onChange=(action (mut email)) required=true}}
-      {{form.input label="passowrd" type="password" value=password onChange=(action (mut password))}}
-    </div>
-  </div>
-  <div class="layout-row">
-    {{#form.submit-button raised=true primary=true}}Submit{{/form.submit-button}}
+      {{form.input label="passowrd" type="password" value=password required=true onChange=(action (mut password))}}
+      <div  class="flex-50 layout-align-center-center layout-row m-10">
+        {{errorMessage}}
+      </div>
+      {{#form.submit-button raised=true primary=true}}Submit{{/form.submit-button}}
   </div>
 {{/paper-form}}

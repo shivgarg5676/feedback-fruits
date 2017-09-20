@@ -1,8 +1,12 @@
 @import 'ember-paper';
+@import 'login';
 .border-red{
   border: red 1px solid;
 }
 .table-cell{
   min-height: 100px;
   border: red 1px solid;
+}
+.m-10{
+  margin: 10px;
 }

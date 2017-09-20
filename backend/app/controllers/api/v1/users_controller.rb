@@ -16,7 +16,7 @@ class Api::V1::UsersController < ApplicationController
 		sign_out(current_user) if current_user
     user = User.find_by_email(params[:user][:email].downcase())
 		if user.nil?
-      render json: {messages: 'username or prassword incorrect' }
+      render json: {message: 'username or prassword incorrect' }
 		else
 			if user.valid_password?(params[:user][:password])      #Check the password validtity
 			  sign_in(:user, user)                                #Sign in the user
@@ -24,9 +24,7 @@ class Api::V1::UsersController < ApplicationController
           render json: {message: "sign_in success"}
 				end
 			else
-				respond_to do |format|
-					format.json {render json: {code: APP_CONFIG[:codes]["USER_SIGN_IN_FAIL"], message: APP_CONFIG[:messages]["INCORRECT_EMAIL_OR_PASSWORD"] }}
-				end
+				render json: {message: "username or prassword incorrect"}
 			end
 		end
   end
