@@ -8,11 +8,7 @@ export default Ember.Route.extend(getLoggedInUser,{
   actions:{
     signOut(){
       debugger;
-    },
-    playMultiplayer(){
-      this.transitionTo('multiplayer')
     }
-
   }
 
 });

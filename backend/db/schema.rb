@@ -20,8 +20,10 @@ ActiveRecord::Schema.define(version: 20170919155137) do
     t.bigint "player2_id"
     t.bigint "winner_id"
     t.string "workflow_state"
+    t.bigint "last_move_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["last_move_id"], name: "index_games_on_last_move_id"
     t.index ["player1_id"], name: "index_games_on_player1_id"
     t.index ["player2_id"], name: "index_games_on_player2_id"
     t.index ["winner_id"], name: "index_games_on_winner_id"

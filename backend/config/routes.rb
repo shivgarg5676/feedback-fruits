@@ -3,11 +3,13 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :users, only: [:create,:update,:show] do
-          collection do
-            get 'logged_in'
-            post 'sign_in' => 'users#signin'
-          end
+        collection do
+          get 'logged_in'
+          post 'sign_in' => 'users#signin'
         end
+      end
+      resources :games
+      resources :moves
     end
   end
 
