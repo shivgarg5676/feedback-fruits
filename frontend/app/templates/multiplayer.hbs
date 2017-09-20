@@ -6,3 +6,11 @@
 {{/each}}
 </div>
 {{message}}
+
+
+{{#if showStartNewGame}}
+  {{#paper-button raised=true onClick=(action 'startNewGame')}}
+    Start new game
+  {{/paper-button}}
+
+{{/if}}

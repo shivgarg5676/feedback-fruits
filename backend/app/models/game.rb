@@ -28,6 +28,7 @@ class Game < ApplicationRecord
     self.last_move = move
     self.save!
     ActionCable.server.broadcast channel, message: {type: 'start_play',last_move:data['move'].to_i,gameId: self.id };
+    set_game_status
   end
 
   def move(data,player)
@@ -66,7 +67,38 @@ class Game < ApplicationRecord
         ActionCable.server.broadcast channel, message: {type: 'waiting'};
       end
     end
+  end
 
+  def set_game_status
+    winning_conditions= [[0,1,2], [3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
+    last_move_state = self.last_move.game_state
+    # check if player is winner
+    winning_conditions.each do |condition|
+      if condition.all? {|x| last_move_state[x] == self.player1.id}
+        set_winner(player1)
+      end
+      if condition.all? {|x| last_move_state[x] == self.player2.id}
+        set_winner(player2)
+      end
+    end
+    #check if a draw
+    unless last_move_state.include? -1
+      set_draw
+    end
+  end
+  def set_winner(winner)
+    self.winner = winner
+    self.save!
+    self.game_completed!
+  end
+  def set_draw
+    self.game_completed!
+  end
+  def game_completed!
+    channel1 = "game_channel_#{self.player1.id}"
+    channel2 = "game_channel_#{self.player2.id}"
+    ActionCable.server.broadcast channel1, message: {type: 'gameEnd',winner: self.winner.try(:id) };
+    ActionCable.server.broadcast channel2, message:{type: 'gameEnd', winner: self.winner.try(:id) };
   end
 
 end

@@ -12,6 +12,7 @@ export default Ember.Controller.extend({
     var subscription = consumer.subscriptions.create({channel: "GameChannel"} ,{
       received: (data) => {
         if(data.message.type == 'waiting'){
+          this.set('showStartNewGame', false)
           this.set('message', "waiting for other player")
         }
         if(data.message.type == "start_play"){
@@ -24,6 +25,20 @@ export default Ember.Controller.extend({
         }
         if(data.message.type == 'gameEnd'){
           //reset game
+          this.set('showStartNewGame', true)
+          if (data.message.winner == null){
+            this.set('canPlay',false)
+            this.set('message', "match draw")
+          }else{
+            if(data.message.winner == this.get('session.currentUser.id')){
+              this.set('canPlay',false)
+              this.set('message', "you won")
+            }
+            else {
+              this.set('canPlay', false)
+              this.set('message', "opponent won")
+            }
+          }
         }
       }
     });
@@ -31,6 +46,10 @@ export default Ember.Controller.extend({
   }),
 
   actions: {
+    startNewGame:function(){
+      this.set('gameState',[{},{},{},{},{},{},{},{},{}]);
+      this.get('subscription').perform('joinGame')
+    },
     playerMoves(index){
       if(this.get('canPlay')){
         if(!this.get('gameState').objectAt(index).value){
