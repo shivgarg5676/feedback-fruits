@@ -1,12 +1,13 @@
+$primary-color : #3F51B6;
 @import 'ember-paper';
 @import 'login';
-.border-red{
-  border: red 1px solid;
-}
-.table-cell{
-  min-height: 100px;
-  border: red 1px solid;
-}
+@import "board";
 .m-10{
   margin: 10px;
+}
+.header{
+  background-color: $primary-color ;
+}
+md-icon.md-default-theme.white {
+  color: #ffffff !important;
 }
