@@ -40,6 +40,6 @@ class Api::V1::UsersController < ApplicationController
     end
   end
   def user_params
-   ActiveModelSerializers::Deserialization.jsonapi_parse(params,  only: [:email,'password', "password-confirmation"])
+   ActiveModelSerializers::Deserialization.jsonapi_parse(params,  only: ["email",'password', "password-confirmation"])
   end
 end

@@ -7,14 +7,15 @@ export default Ember.Route.extend({
       this.transitionTo('/')
     }
   },
+  setupController:function(controller,model){
+    this._super(controller,model)
+    controller.set('showLogin',true)
+  },
  actions:{
    willTransition:function(transition){
      if(!this.get('session.currentUser')){
       transition.abort()
      }
-   },
-   login(){
-
    }
  }
 
