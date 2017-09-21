@@ -1,0 +1,13 @@
+$primary-color : #3F51B6;
+@import 'ember-paper';
+@import 'login';
+@import "board";
+.m-10{
+  margin: 10px;
+}
+.header{
+  background-color: $primary-color ;
+}
+md-icon.md-default-theme.white {
+  color: #ffffff !important;
+}

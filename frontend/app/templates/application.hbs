@@ -1,5 +1,35 @@
-{{!-- The following component displays Ember's default welcome message. --}}
-{{welcome-page}}
-{{!-- Feel free to remove this! --}}
+{{#if session.currentUser }}
+  {{#paper-sidenav-container class="inner-sidenav"}}
+    {{#paper-sidenav
+      class="md-whiteframe-z2"
+      name="left2"
+      open=leftSideBarOpen2
+      lockedOpen=leftSideBarLockedOpen
+      onToggle=(action (mut leftSideBarOpen2))}}
+      {{#paper-toolbar as |toolbar|}}
+        {{#paper-toolbar-tools}}tic tac toe{{/paper-toolbar-tools}}
+        {{#paper-toolbar-tools}}{{session.currentUser.email}}{{/paper-toolbar-tools}}
+      {{/paper-toolbar}}
+      {{#paper-content padding=true}}
+        <div {{action 'signOut'}}>
+          sign-out
+        </div>
+      {{/paper-content}}
+    {{/paper-sidenav}}
 
-{{outlet}}
+    {{#paper-card-content class="flex"}}
+    <div class="layout-columnlayout-align-start-sart flex-100" style="height: 500px">
+      <div class="header">
+        {{#paper-button raised=false onClick=(action "toggle" "leftSideBarOpen2")}}
+          {{paper-icon "menu" size=48 class="white"}}
+        {{/paper-button}}
+      </div>
+      {{outlet}}
+    </div>
+    {{/paper-card-content}}
+
+  {{/paper-sidenav-container}}
+
+{{else}}
+  {{outlet}}
+{{/if}}

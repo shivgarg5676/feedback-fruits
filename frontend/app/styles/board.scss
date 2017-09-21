@@ -1,0 +1,15 @@
+.table-cell{
+  min-height: 100px;
+  margin: 0px !important;
+  padding: 0px;
+  font-size: 4em;
+}
+.border-right{
+  border-right: $primary-color 2px solid;
+}
+.border-bottom{
+  border-bottom: $primary-color 2px solid;
+}
+.board{
+  margin-top: 20px;
+}

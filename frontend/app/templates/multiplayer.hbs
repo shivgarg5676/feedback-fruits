@@ -1,0 +1,19 @@
+{{outlet}}
+
+<div class="layout-row layout-wrap board layout-align-center-center">
+  <div class="layout-row layout-wrap">
+    {{#each gameState as |cell index| }}
+      {{#paper-button raised=true class=(border index "flex-30 table-cell") onClick=(action 'playerMoves' index)}}
+        {{cell.value}}
+      {{/paper-button}}
+    {{/each}}
+  </div>
+</div>
+<div class ="layout-column layout-wrap board layout-align-center-center" >
+  {{message}}
+  {{#if showStartNewGame}}
+    {{#paper-button raised=true onClick=(action 'startNewGame')}}
+      Start new game
+    {{/paper-button}}
+  {{/if}}
+</div>
