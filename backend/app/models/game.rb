@@ -107,13 +107,13 @@ class Game < ApplicationRecord
   end
   def set_winner(winner)
     self.winner = winner
-    self.save!
     self.game_completed!
+    self.save!
   end
   def set_draw
     self.game_completed!
   end
-  def game_completed!
+  def game_completed
     channel1 = "game_channel_#{self.player1.id}"
     channel2 = "game_channel_#{self.player2.id}"
     ActionCable.server.broadcast channel1, message: {type: 'gameEnd',winner: self.winner.try(:id) };
