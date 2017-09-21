@@ -8,6 +8,7 @@
       onToggle=(action (mut leftSideBarOpen2))}}
       {{#paper-toolbar as |toolbar|}}
         {{#paper-toolbar-tools}}tic tac toe{{/paper-toolbar-tools}}
+        {{#paper-toolbar-tools}}{{session.currentUser.email}}{{/paper-toolbar-tools}}
       {{/paper-toolbar}}
       {{#paper-content padding=true}}
         <div {{action 'signOut'}}>

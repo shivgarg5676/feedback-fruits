@@ -3,16 +3,14 @@ class GameChannel < ApplicationCable::Channel
     stream_from "game_channel_#{current_user.id}"
   end
   def unsubscribed
-    # Any cleanup needed when channel is unsubscribed
+    Game.leave_game(current_user) if current_user.present?
   end
 
   def joinGame(data)
-    if current_user
-      Game.join(current_user)
-    end
+    Game.join(current_user) if current_user.present?
   end
-  def endGame(data)
-
+  def leaveGame(data)
+    Game.leave_game(current_user) if current_user.present?
   end
 
   def move(data)

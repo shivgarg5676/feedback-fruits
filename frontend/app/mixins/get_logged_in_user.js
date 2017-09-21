@@ -4,7 +4,7 @@ import constants from "frontend/utils/constants";
 let mixin = Ember.Mixin.create({
   session: Ember.inject.service(),
   getLoggedInUser:function(){
-    self = this;
+    let self = this;
     let hash= {
       success:function(data){
         if(data.message == "No User Logged in"){

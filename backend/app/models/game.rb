@@ -1,7 +1,7 @@
 class Game < ApplicationRecord
   belongs_to :player1, class_name: "User"
   belongs_to :player2, class_name: "User", optional: true
-  has_many :moves
+  has_many :moves, dependent: :destroy
   belongs_to :winner, class_name: 'User', optional: true
   belongs_to :last_move, class_name: 'Move', optional: true
   include Workflow
@@ -13,6 +13,25 @@ class Game < ApplicationRecord
       event :game_completed, :transitions_to => :game_completed
     end
     state :game_completed
+  end
+
+
+  def self.leave_game(player)
+    # delete new Games if Any
+    new_games_as_player1 = Game.with_new_state.where(:player1 => player)
+    # supposed to be empty
+    new_games_as_player2 = Game.with_new_state.where(:player1 => player)
+    new_games_as_player1.destroy_all
+    new_games_as_player2.destroy_all
+    #update playing Games if Any
+    playing_games = Game.with_playing_state.where(:player1 => player).or(Game.with_playing_state.where(:player2 => player))
+    playing_games.each do |game|
+      if game.player1.id == player.id
+        game.set_winner(game.player2)
+      else
+        game.set_winner(game.player1)
+      end
+    end
   end
 
   def self.get_new_games(player)
