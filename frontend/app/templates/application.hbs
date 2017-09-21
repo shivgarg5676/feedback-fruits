@@ -11,9 +11,16 @@
         {{#paper-toolbar-tools}}{{session.currentUser.email}}{{/paper-toolbar-tools}}
       {{/paper-toolbar}}
       {{#paper-content padding=true}}
-        <div {{action 'signOut'}}>
-          sign-out
-        </div>
+        {{#paper-item}}
+          <div {{action 'index'}}>
+            Home
+          </div>
+        {{/paper-item}}
+        {{#paper-item}}
+          <div {{action 'signOut'}}>
+            Sign-out
+          </div>
+        {{/paper-item}}
       {{/paper-content}}
     {{/paper-sidenav}}
 
