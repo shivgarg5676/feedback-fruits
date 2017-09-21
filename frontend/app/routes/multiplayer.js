@@ -6,6 +6,7 @@ export default Ember.Route.extend({
     controller.set('gameState',[{},{},{},{},{},{},{},{},{}]);
     controller.set('showStartNewGame', true);
     controller.set('message', "");
+    controller.set('gameId',null);
   },
   resetController: function(controller,isExisting, transition){
     this._super.apply(this, arguments);
@@ -14,7 +15,7 @@ export default Ember.Route.extend({
   actions:{
     willTransition:function(transition){
       if (!this.get('controller.showStartNewGame')){
-        let r = confirm("If You leave opponnet will win");
+        let r = confirm("Are you sure you want to quit?");
         if (r == true) {
           this.get('controller').get('subscription').perform('leaveGame')
         } else {
