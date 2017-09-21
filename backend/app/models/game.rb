@@ -41,29 +41,31 @@ class Game < ApplicationRecord
     Game.with_new_state.all
   end
 
-  def create_move(array,data,player,channel)
+  def create_move(array,data,player,opponent_channel,my_channel)
     array[data['move'].to_i] = player.id
     move= Move.create(:game_state => array, :player => player, :game => self,:previous_move => self.last_move)
     self.last_move = move
     self.save!
-    ActionCable.server.broadcast channel, message: {type: 'start_play',last_move:data['move'].to_i,gameId: self.id };
+    ActionCable.server.broadcast opponent_channel, message: {type: 'start_play',last_move:data['move'].to_i,gameId: self.id };
+    ActionCable.server.broadcast my_channel, message: {type: 'pause_play',last_move:data['move'].to_i,gameId: self.id };
     set_game_status
   end
 
   def move(data,player)
     # player moves
-    channel = nil
+    opponent_channel = nil
+    my_channel = "game_channel_#{player.id}"
     if player == self.player1
-      channel = "game_channel_#{self.player2.id}"
+      opponent_channel = "game_channel_#{self.player2.id}"
     else
-      channel = "game_channel_#{self.player1.id}"
+      opponent_channel = "game_channel_#{self.player1.id}"
     end
     if self.last_move.present?
       array = self.last_move.game_state
-      self.create_move(array, data,player,channel)
+      self.create_move(array, data,player,opponent_channel,my_channel)
     else
       array = Array.new(9, -1)
-      self.create_move(array, data,player,channel)
+      self.create_move(array, data,player,opponent_channel,my_channel)
     end
   end
 

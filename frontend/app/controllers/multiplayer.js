@@ -23,6 +23,14 @@ export default Ember.Controller.extend({
             Ember.set(this.get('gameState').objectAt(data.message.last_move),'value',this.get('opponentToken'))
           }
         }
+        if(data.message.type == "pause_play"){
+          this.set('canPlay',false)
+          this.set('gameId', data.message.gameId)
+          this.set('message', "waiting for other player")
+          if(data.message.last_move != null){
+            Ember.set(this.get('gameState').objectAt(data.message.last_move),'value',this.get('myToken'))
+          }
+        }
         if(data.message.type == 'gameEnd'){
           //reset game
           this.set('showStartNewGame', true)
@@ -53,10 +61,7 @@ export default Ember.Controller.extend({
     playerMoves(index){
       if(this.get('canPlay')){
         if(!this.get('gameState').objectAt(index).value){
-          Ember.set(this.get('gameState').objectAt(index),'value',this.get('myToken'))
-          this.set('canPlay',false)
           this.get('subscription').perform('move',{move: index,gameId: this.get('gameId')})
-          this.set('message', "waiting for other player")
         }
       }
     }
