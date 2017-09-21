@@ -29,6 +29,29 @@ let controller = Ember.Controller.extend(getLoggedInUser,{
       }
       ajax(constants.SIGN_IN_URL,'POST', hash, this)
       return false;
+    },
+    gotoCreateUser:function(){
+      let user = this.store.createRecord('user')
+      this.set('newUser', user)
+      this.set('errorMessage',"")
+      this.set('showLogin',false)
+    },
+    gotoLogin: function(){
+      this.set('errorMessage',"")
+      this.set('showLogin',true)
+
+    },
+    signUp:function(){
+      this.get('newUser').save().then((data)=>{
+        this.set('errorMessage', "New user successfully created")
+      }).catch((adapterError)=>{
+        let str =""
+        this.get('newUser.errors').toArray().forEach((item)=>{
+          if(item.attribute){
+            str = str + " "+ item.attribute.replace(/([A-Z])/g,' $1').replace(/^./, (str)=>{str.toUpperCase()}) + " "+ item.message + "</br>"
+          }});
+          this.set('errorMessage', str);
+        });
     }
   }
 })

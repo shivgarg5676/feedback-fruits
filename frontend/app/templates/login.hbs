@@ -1,15 +1,38 @@
-{{outlet}}
-{{#paper-form  class="layout-row flex-100 layout-align-center-center login-form" onSubmit=(action "login") as |form|}}
+{{#if showLogin}}
+  {{#paper-form  class="layout-row flex-100 layout-align-center-center login-form" onSubmit=(action "login") as |form|}}
 
-  <div class="layout-column flex-50">
-      <div class="headline flex-50  layout-align-center-center layout-row flex-100">
-        tic tac toe
-      </div>
-      {{form.input label="email" value=email onChange=(action (mut email)) required=true}}
-      {{form.input label="passowrd" type="password" value=password required=true onChange=(action (mut password))}}
-      <div  class="flex-50 layout-align-center-center layout-row m-10">
-        {{errorMessage}}
-      </div>
-      {{#form.submit-button raised=true primary=true}}Submit{{/form.submit-button}}
-  </div>
-{{/paper-form}}
+    <div class="layout-column flex-50">
+        <div class="headline flex-50  layout-align-center-center layout-row flex-100">
+          tic tac toe
+        </div>
+        {{form.input label="email" value=email onChange=(action (mut email)) required=true}}
+        {{form.input label="passowrd" type="password" value=password required=true onChange=(action (mut password))}}
+        <div  class="flex-50 layout-align-center-center layout-row m-10">
+          {{{errorMessage}}}
+        </div>
+        {{#form.submit-button raised=true primary=true}}Log in{{/form.submit-button}}
+        {{#paper-button raised=true onClick=(action 'gotoCreateUser') class="layout-row flex-50"}}
+          Sign Up
+        {{/paper-button}}
+    </div>
+  {{/paper-form}}
+{{else}}
+  {{#paper-form  class="layout-row flex-100 layout-align-center-center login-form" onSubmit=(action "signUp") as |form|}}
+
+    <div class="layout-column flex-50">
+        <div class="headline flex-50  layout-align-center-center layout-row flex-100">
+          tic tac toe signUp
+        </div>
+        {{form.input label="email" value=newUser.email onChange=(action (mut newUser.email)) required=true}}
+        {{form.input label="passowrd" type="password" value=newUser.password required=true onChange=(action (mut newUser.password))}}
+        {{form.input label="passowrd" type="password" value=newUser.passwordConfirmation required=true onChange=(action (mut newUser.passwordConfirmation))}}
+        <div  class="flex-50 layout-align-center-center layout-row m-10">
+          {{{errorMessage}}}
+        </div>
+        {{#form.submit-button raised=true primary=true}}Create Account{{/form.submit-button}}
+        {{#paper-button raised=true onClick=(action 'gotoLogin') class="layout-row flex-50"}}
+          Log in
+        {{/paper-button}}
+    </div>
+  {{/paper-form}}
+{{/if}}

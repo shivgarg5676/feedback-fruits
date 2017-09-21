@@ -1,5 +1,8 @@
 class Api::V1::UsersController < ApplicationController
   skip_before_action :authenticate_user!, only: [:signin, :logged_in,:create]
+  def index
+    render :json => User.all
+  end
   def logged_in
     if current_user
     	render json: current_user
@@ -37,6 +40,6 @@ class Api::V1::UsersController < ApplicationController
     end
   end
   def user_params
-   ActiveModelSerializers::Deserialization.jsonapi_parse(params,  only: [:email,'password', "password-confirmation"])
+   ActiveModelSerializers::Deserialization.jsonapi_parse(params,  only: ["email",'password', "password-confirmation"])
   end
 end

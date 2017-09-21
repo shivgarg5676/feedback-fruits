@@ -13,7 +13,11 @@ export default Ember.Route.extend(getLoggedInUser,{
       ajax(constants.SIGN_OUT_URL,'get', hash, this).then(()=>{
         window.location.reload()
       })
+    },
+    index(){
+      this.transitionTo('index')
     }
+
   }
 
 });

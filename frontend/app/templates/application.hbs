@@ -11,14 +11,21 @@
         {{#paper-toolbar-tools}}{{session.currentUser.email}}{{/paper-toolbar-tools}}
       {{/paper-toolbar}}
       {{#paper-content padding=true}}
-        <div {{action 'signOut'}}>
-          sign-out
-        </div>
+        {{#paper-item}}
+          <div {{action 'index'}}>
+            Home
+          </div>
+        {{/paper-item}}
+        {{#paper-item}}
+          <div {{action 'signOut'}}>
+            Sign-out
+          </div>
+        {{/paper-item}}
       {{/paper-content}}
     {{/paper-sidenav}}
 
     {{#paper-card-content class="flex"}}
-    <div class="layout-columnlayout-align-start-sart flex-100" style="height: 500px">
+    <div class="layout-columnlayout-align-start-sart flex-100">
       <div class="header">
         {{#paper-button raised=false onClick=(action "toggle" "leftSideBarOpen2")}}
           {{paper-icon "menu" size=48 class="white"}}
