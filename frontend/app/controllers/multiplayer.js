@@ -33,20 +33,23 @@ export default Ember.Controller.extend({
         }
         if(data.message.type == 'gameEnd'){
           //reset game
-          this.set('showStartNewGame', true)
-          if (data.message.winner == null){
-            this.set('canPlay',false)
-            this.set('message', "match draw")
-          }else{
-            if(data.message.winner == this.get('session.currentUser.id')){
+          Ember.run.later(()=>{
+            this.set('showStartNewGame', true)
+            if (data.message.winner == null){
               this.set('canPlay',false)
-              this.set('message', "you won")
+              this.set('message', "match draw")
+            }else{
+              if(data.message.winner == this.get('session.currentUser.id')){
+                this.set('canPlay',false)
+                this.set('message', "you won")
+              }
+              else {
+                this.set('canPlay', false)
+                this.set('message', "opponent won")
+              }
             }
-            else {
-              this.set('canPlay', false)
-              this.set('message', "opponent won")
-            }
-          }
+          },500)
+
         }
       }
     });
