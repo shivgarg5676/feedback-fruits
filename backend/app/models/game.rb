@@ -15,22 +15,21 @@ class Game < ApplicationRecord
     state :game_completed
   end
 
+  def self.played_by(player)
+    Game.where(:player1 => player).or(Game.where(:player2 => player))
+  end
 
-  def self.leave_game(player)
+  def opponent_of(player)
+    return self.player1.id == player.id ? self.player2 : self.player1
+  end
+
+  def self.end_games_of(player)
     # delete new Games if Any
-    new_games_as_player1 = Game.with_new_state.where(:player1 => player)
-    # supposed to be empty
-    new_games_as_player2 = Game.with_new_state.where(:player1 => player)
-    new_games_as_player1.destroy_all
-    new_games_as_player2.destroy_all
+    new_games_as_player1 = Game.with_new_state.played_by(player).destroy_all
     #update playing Games if Any
-    playing_games = Game.with_playing_state.where(:player1 => player).or(Game.with_playing_state.where(:player2 => player))
+    playing_games = Game.with_playing_state.played_by(player)
     playing_games.each do |game|
-      if game.player1.id == player.id
-        game.set_winner(game.player2)
-      else
-        game.set_winner(game.player1)
-      end
+      game.set_winner(game.opponent_of(player))
     end
   end
 
@@ -110,7 +109,6 @@ class Game < ApplicationRecord
   def set_winner(winner)
     self.winner = winner
     self.game_completed!
-    self.save!
   end
   def set_draw
     self.game_completed!
