@@ -35,7 +35,7 @@ class Game < ApplicationRecord
 
   def self.join(player)
     game = Game.with_new_state.where(:player1 => player).first
-    channel =  "game_channel_#{player.id}"
+    channel = player.channel_for(Game)
     if game.present?
       ActionCable.server.broadcast channel, message: {type: 'waiting'};
     else
@@ -63,6 +63,11 @@ class Game < ApplicationRecord
       return nil
     end
   end
+  def set_winner(winner)
+    self.winner = winner
+    self.game_completed!
+  end
+
 
   def update_game_state(last_move)
     # check if player is winner
@@ -76,15 +81,9 @@ class Game < ApplicationRecord
     self.save!
   end
 
-  def set_winner(winner)
-    self.winner = winner
-    self.game_completed!
-  end
-
   def set_draw
     self.game_completed!
   end
-
 
   def game_completed
     channel1 = self.player1.channel_for(Game)

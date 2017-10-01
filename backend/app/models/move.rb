@@ -22,8 +22,7 @@ class Move < ApplicationRecord
   end
 
   def broadcast_messages
-    opponent = self.game.opponent_of(self.player)
-    opponent_channel = opponent.channel_for(Game)
+    opponent_channel =  self.game.opponent_of(self.player).channel_for(Game)
     my_channel = self.player.channel_for(Game)
     ActionCable.server.broadcast opponent_channel, message: {type: 'start_play',last_move: self.move_index, gameId: self.game.id };
     ActionCable.server.broadcast my_channel, message: {type: 'pause_play',last_move: self.move_index, gameId: self.game.id };
