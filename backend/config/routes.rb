@@ -8,7 +8,6 @@ Rails.application.routes.draw do
           post 'sign_in' => 'users#signin'
         end
       end
-      resources :games
       resources :moves
     end
   end
