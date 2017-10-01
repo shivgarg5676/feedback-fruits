@@ -15,7 +15,7 @@ class GameChannel < ApplicationCable::Channel
 
   def move(data)
     game= Game.with_playing_state.where(:id => data['gameId']).first
-    game.move(data, current_user)
+    Move.create(:game => game,move_index: data['move'].to_i, player: current_user)
   end
 
 
