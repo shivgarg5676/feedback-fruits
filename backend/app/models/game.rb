@@ -23,17 +23,15 @@ class Game < ApplicationRecord
     return self.player1.id == player.id ? self.player2 : self.player1
   end
 
-
   def self.end_games_of(player)
     # delete new Games if Any
     new_games_as_player1 = Game.with_new_state.played_by(player).destroy_all
-    #update playing Games if Any
+    #update playing Games if Any and set opponent as winner
     playing_games = Game.with_playing_state.played_by(player)
     playing_games.each do |game|
       game.set_winner(game.opponent_of(player))
     end
   end
-
 
   def self.join(player)
     game = Game.with_new_state.where(:player1 => player).first
@@ -56,33 +54,32 @@ class Game < ApplicationRecord
     end
   end
 
-
-  def set_game_status(last_move)
-    self.last_move = last_move
-    self.save
-    winning_conditions= [[0,1,2], [3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
-    last_move_state = self.last_move.game_state
-    # check if player is winner
-    winning_conditions.each do |condition|
-      if condition.all? {|x| last_move_state[x] == self.player1.id}
-        set_winner(player1)
-      end
-      if condition.all? {|x| last_move_state[x] == self.player2.id}
-        set_winner(player2)
-      end
-    end
-    #check if a draw
-    unless last_move_state.include? -1
-      set_draw
+  def get_winner
+    if self.last_move.is_winning_state_for(self.player1)
+      return player1
+    elsif self.last_move.is_winning_state_for(self.player2)
+      return player2
+    else
+      return nil
     end
   end
 
+  def update_game_state(last_move)
+    # check if player is winner
+    self.last_move = last_move
+    winner = self.get_winner
+    self.set_winner(winner) if winner.present?
+    #check if a draw
+    unless last_move.game_state.include? -1
+      set_draw
+    end
+    self.save!
+  end
 
   def set_winner(winner)
     self.winner = winner
     self.game_completed!
   end
-
 
   def set_draw
     self.game_completed!

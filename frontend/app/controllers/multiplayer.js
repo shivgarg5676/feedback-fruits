@@ -8,7 +8,8 @@ export default Ember.Controller.extend({
   session: Ember.inject.service(),
   cableService: Ember.inject.service('cable'),
   setupSubscription: Ember.on('init', function() {
-    var consumer = this.get('cableService').createConsumer('ws://localhost:4200/cable');
+    let url = "ws://" + window.location.host + "/cable"
+    var consumer = this.get('cableService').createConsumer(url);
     var subscription = consumer.subscriptions.create({channel: "GameChannel"} ,{
       received: (data) => {
         if(data.message.type == 'waiting'){

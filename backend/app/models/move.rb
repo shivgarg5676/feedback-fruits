@@ -8,8 +8,9 @@ class Move < ApplicationRecord
 
   before_validation :create_game_state
   before_validation :set_previous_move
+  after_save :update_game
   after_save :broadcast_messages
-  after_save :set_game_status
+
 
   def create_game_state
     self.game_state = self.game.last_move.present? ? self.game.last_move.game_state : Array.new(9, -1)
@@ -28,8 +29,18 @@ class Move < ApplicationRecord
     ActionCable.server.broadcast my_channel, message: {type: 'pause_play',last_move: self.move_index, gameId: self.game.id };
   end
 
-  def set_game_status
-    self.game.set_game_status(self)
+  def is_winning_state_for(player)
+    winning_conditions= [[0,1,2], [3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
+    winning_conditions.each do |condition|
+      if condition.all? {|x| self.game_state[x] == player.id}
+        return true
+      end
+    end
+    return false
+  end
+
+  def update_game
+    self.game.update_game_state(self)
   end
 
 
