@@ -58,7 +58,7 @@ export default Ember.Controller.extend({
   }),
 
   actions: {
-    startNewGame:function(){
+    startNewGame(){
       this.set('gameState',[{},{},{},{},{},{},{},{},{}]);
       this.get('subscription').perform('joinGame')
     },
