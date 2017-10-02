@@ -6,4 +6,9 @@ class User < ApplicationRecord
   def games_won
     Game.where(:winner => self).count
   end
+
+  def channel_for(klass)
+    return "#{klass.to_s.downcase}_channel_#{self.id}"
+  end
+
 end

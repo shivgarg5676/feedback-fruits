@@ -15,63 +15,27 @@ class Game < ApplicationRecord
     state :game_completed
   end
 
+  def self.played_by(player)
+    Game.where(:player1 => player).or(Game.where(:player2 => player))
+  end
 
-  def self.leave_game(player)
+  def opponent_of(player)
+    return self.player1.id == player.id ? self.player2 : self.player1
+  end
+
+  def self.end_games_of(player)
     # delete new Games if Any
-    new_games_as_player1 = Game.with_new_state.where(:player1 => player)
-    # supposed to be empty
-    new_games_as_player2 = Game.with_new_state.where(:player1 => player)
-    new_games_as_player1.destroy_all
-    new_games_as_player2.destroy_all
-    #update playing Games if Any
-    playing_games = Game.with_playing_state.where(:player1 => player).or(Game.with_playing_state.where(:player2 => player))
+    new_games_as_player1 = Game.with_new_state.played_by(player).destroy_all
+    #update playing Games if Any and set opponent as winner
+    playing_games = Game.with_playing_state.played_by(player)
     playing_games.each do |game|
-      if game.player1.id == player.id
-        game.set_winner(game.player2)
-      else
-        game.set_winner(game.player1)
-      end
-    end
-  end
-
-  def self.get_new_games(player)
-    if(Game.with_new_state.all.length == 0)
-      Game.create(:player1 => player)
-    end
-    Game.with_new_state.all
-  end
-
-  def create_move(array,data,player,opponent_channel,my_channel)
-    array[data['move'].to_i] = player.id
-    move= Move.create(:game_state => array, :player => player, :game => self,:previous_move => self.last_move)
-    self.last_move = move
-    self.save!
-    ActionCable.server.broadcast opponent_channel, message: {type: 'start_play',last_move:data['move'].to_i,gameId: self.id };
-    ActionCable.server.broadcast my_channel, message: {type: 'pause_play',last_move:data['move'].to_i,gameId: self.id };
-    set_game_status
-  end
-
-  def move(data,player)
-    # player moves
-    opponent_channel = nil
-    my_channel = "game_channel_#{player.id}"
-    if player == self.player1
-      opponent_channel = "game_channel_#{self.player2.id}"
-    else
-      opponent_channel = "game_channel_#{self.player1.id}"
-    end
-    if self.last_move.present?
-      array = self.last_move.game_state
-      self.create_move(array, data,player,opponent_channel,my_channel)
-    else
-      array = Array.new(9, -1)
-      self.create_move(array, data,player,opponent_channel,my_channel)
+      game.set_winner(game.opponent_of(player))
     end
   end
 
   def self.join(player)
     game = Game.with_new_state.where(:player1 => player).first
-    channel =  "game_channel_#{player.id}"
+    channel = player.channel_for(Game)
     if game.present?
       ActionCable.server.broadcast channel, message: {type: 'waiting'};
     else
@@ -90,34 +54,40 @@ class Game < ApplicationRecord
     end
   end
 
-  def set_game_status
-    winning_conditions= [[0,1,2], [3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
-    last_move_state = self.last_move.game_state
-    # check if player is winner
-    winning_conditions.each do |condition|
-      if condition.all? {|x| last_move_state[x] == self.player1.id}
-        set_winner(player1)
-      end
-      if condition.all? {|x| last_move_state[x] == self.player2.id}
-        set_winner(player2)
-      end
-    end
-    #check if a draw
-    unless last_move_state.include? -1
-      set_draw
+  def get_winner
+    if self.last_move.is_winning_state_for(self.player1)
+      return player1
+    elsif self.last_move.is_winning_state_for(self.player2)
+      return player2
+    else
+      return nil
     end
   end
   def set_winner(winner)
     self.winner = winner
     self.game_completed!
+  end
+
+
+  def update_game_state(last_move)
+    # check if player is winner
+    self.last_move = last_move
+    winner = self.get_winner
+    self.set_winner(winner) if winner.present?
+    #check if a draw
+    unless last_move.game_state.include? -1
+      set_draw
+    end
     self.save!
   end
+
   def set_draw
     self.game_completed!
   end
+
   def game_completed
-    channel1 = "game_channel_#{self.player1.id}"
-    channel2 = "game_channel_#{self.player2.id}"
+    channel1 = self.player1.channel_for(Game)
+    channel2 = self.player2.channel_for(Game)
     ActionCable.server.broadcast channel1, message: {type: 'gameEnd',winner: self.winner.try(:id) };
     ActionCable.server.broadcast channel2, message:{type: 'gameEnd', winner: self.winner.try(:id) };
   end

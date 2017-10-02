@@ -4,7 +4,7 @@ export default Ember.Controller.extend({
   session: Ember.inject.service(),
   actions:{
     toggle:function(elem){
-      this.set(elem, !this.get(elem))
+      this.set(elem, this.toggleProperty(elem))
     },
   }
 });
